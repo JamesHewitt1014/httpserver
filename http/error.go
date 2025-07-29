@@ -14,6 +14,7 @@ func (err HttpError) Error() string {
 	return err.errorMsg
 }
 
+// Creates a response from a Go error
 func ResponseFromError(err error) *Response {
 	httpError := errorAsHttpError(err)
 	message := []byte(httpError.errorMsg)

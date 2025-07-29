@@ -34,6 +34,7 @@ var acceptedMethods = []string{
 
 const BUF_SIZE = 1024
 
+// Takes a reader (stream of bytes) and parses it into a HTTP Request
 func requestFromStream(stream io.Reader) (*Request, error) {
 	buffer := make([]byte, BUF_SIZE)
 	p := newParser()

@@ -33,7 +33,7 @@ func Ok() *Response {
 	}
 }
 
-// Converts the response struct into the complete byte representation
+// Converts the response struct into a valid byte representation for a HTTP/1.1 response
 func (r *Response) Marshall() []byte {
 	buf := bytes.Buffer{}
 	statusline := r.HttpVersion + SPACE + r.StatusCode.String()
@@ -52,6 +52,7 @@ func (r *Response) Marshall() []byte {
 	return buf.Bytes()
 }
 
+// Converts the response struct into a string representation. This string representation should be a valid HTTP/1.1 response.
 func (r *Response) String() string {
 	return string(r.Marshall())
 }
@@ -84,12 +85,12 @@ func (r *Response) SetDefaultHeaders(contentLength int) {
 //TODO: Refactor this - maybe to use SetHeader
 // Maybe add more options to CreateResponse instead (i.e. content-type, etc)
 
-// Writes everything at once to the writer (i.e. net.Connection)
+// Writes the responce to the writer (i.e. net.Connection)
 func (r *Response) Write(writer io.Writer) {
 	marshalledResponse := r.Marshall()
 	writer.Write(marshalledResponse)
 }
 		
-// TODO: 
+// TODO:
 // - Additional Headers: i.e. cache-control, datetime, etc
 // - Support for streamed response (i.e. to allow for chunked encode)

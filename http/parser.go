@@ -36,6 +36,8 @@ func newParser() *requestParser {
 	}
 }
 
+// Works towards parsing a request.
+// Does not require data to contain all the request bytes (see request.requestFromStream) - will work with whats its got and remember its spot.
 func (p *requestParser) parse(data []byte) error {
 	for _, char := range data {
 		p.line = append(p.line, char)

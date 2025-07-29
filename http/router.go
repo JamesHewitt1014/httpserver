@@ -3,7 +3,7 @@ package http
 type router struct {
 	routes map[route]Handler
 }
-// Note: Router is setup like this so that it can be easily extracted from HttpServer if it needs to be extracted out later on
+// Note: Router is setup like this so that it can be easily extracted from HttpServer if it needs to be decoupled later on
 
 type route struct {
 	Path   string
@@ -32,6 +32,7 @@ func (r *router) RegisterRoute(method string, path string, fn Handler) {
 }
 //NOTE: I could do a check here to see if httpMethod is one of the allowed methods?
 
+// Calls matching Handler function for the request
 func (r *router) dispatch(request *Request) (*Response, error) {
 	route := route{
 		Path: request.Path,

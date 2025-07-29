@@ -13,6 +13,7 @@ type HttpServer struct {
 // NOTE: 
 // 1. open represents an actively listening server - could use an atomic bool or maybe even a channel instead if worried about race conditions
 // 2. Could add an insertable error handler to HttpServer: for setting how default errors are handled (i.e. change content-type to html, and display "500 server error" page)
+// 3. Routing is currently limited, an alternative might be to make Router an interface and to allow end-users to define routing behaviour. This would probably require it to be decoupled more from the HttpServer struct.
 
 func CreateServer() *HttpServer {
 	router := newRouter()
@@ -28,6 +29,7 @@ func (s *HttpServer) RegisterRoute(method string, path string, fn Handler){
 	s.router.RegisterRoute(method, path, fn)	
 }
 
+// Starts the HttpServer. It will begin listening for Http Requests
 func (s *HttpServer) Start(port int) (error) {
 	address := fmt.Sprintf(":%d", port)
 	tcpListener, err := net.Listen("tcp", address)
@@ -53,7 +55,6 @@ func (s *HttpServer) listen() {
 		}
 
 		go s.handleConnection(connection)
-		//go s.testResponse(connection)
 	}
 }
 
