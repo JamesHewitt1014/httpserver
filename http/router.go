@@ -5,6 +5,10 @@ type router struct {
 }
 // Note: Router is setup like this so that it can be easily extracted from HttpServer if it needs to be decoupled later on
 
+// type Router interface{
+// 	dispatch() *Response
+// }
+
 type route struct {
 	Path   string
 	Method string

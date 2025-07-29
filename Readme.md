@@ -10,17 +10,22 @@ Features:
 
 # Usage
 Create server using:
+
 `server := http.CreateServer()`
-Register as many routes you want - using the HttpMethod, request path, and the function you wish to apply to that route
+
+Register as many routes you want - using the HttpMethod, request path, and the function you wish to apply to that route. 
 Note that this function must take a `http.Request` as its parameter and return a `http.Response`.
+
 `server.RegisterRoute("GET", "/example/of/path", functionName)`
+
 Start the server by using the start function and providing a port (i.e. 80)
+
 `err := server.Start(80)`
 
 # Example Server
 An example server using the library can be found under `example/main.go`. 
 
-To run this example server run `go run ./example` for the project root directory.
+To run this example server use the command `go run ./example` from the project root directory.
 
 The server will attempt to run on port `:8080` - if successful you will be able to interact with the server using `cUrl` or another HttpClient (i.e. Postman). Check the code in `example/main.go` to see which paths are setup.
 

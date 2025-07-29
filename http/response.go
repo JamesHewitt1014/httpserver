@@ -14,25 +14,6 @@ type Response struct {
 	Body        []byte
 }
 
-// Creates a response from status code and the content/body (as bytes)
-func CreateResponse(status Status, content []byte) *Response {
-	res := &Response{}
-	res.SetStatusLine(status)
-	res.SetDefaultHeaders(len(content))
-	res.Body = content 
-	return res
-}
-
-// Returns an empty 200 OK response
-func Ok() *Response {
-	return &Response {
-		HttpVersion: "HTTP/1.1",
-		StatusCode: StatusOk,
-		Headers: Headers{"Connection": "close"},
-		Body: []byte{},
-	}
-}
-
 // Converts the response struct into a valid byte representation for a HTTP/1.1 response
 func (r *Response) Marshall() []byte {
 	buf := bytes.Buffer{}
@@ -52,6 +33,12 @@ func (r *Response) Marshall() []byte {
 	return buf.Bytes()
 }
 
+// Writes the responce to the writer (i.e. net.Connection)
+func (r *Response) Write(writer io.Writer) {
+	marshalledResponse := r.Marshall()
+	writer.Write(marshalledResponse)
+}
+
 // Converts the response struct into a string representation. This string representation should be a valid HTTP/1.1 response.
 func (r *Response) String() string {
 	return string(r.Marshall())
@@ -63,32 +50,44 @@ func (r *Response) Print() {
 
 const VERSION = "HTTP/1.1"
 
-func (r *Response) SetStatusLine(statusCode Status) error {
-	r.HttpVersion = VERSION
-	r.StatusCode  = statusCode
-	return nil
+// Creates a response from status code and the content/body (as bytes).
+func CreateResponse(status Status, content []byte) *Response {
+	res := &Response{
+		HttpVersion: VERSION,
+		StatusCode: status,
+		Headers: Headers{"Connection": "close"},
+		Body: content,
+	}
+
+	length := strconv.Itoa(len(content))
+	res.SetHeader("Content-Length", length)
+
+	res.SetHeader("Content-Type", "text/plain") //Can be overwritten later
+
+	res.Body = content 
+	return res
+}
+// TODO: want to update my approach to support multiple options / headers
+// 	this might require a refactor of the headers functionality
+
+// Returns an empty 200 OK response
+func Ok() *Response {
+	return &Response {
+		HttpVersion: VERSION,
+		StatusCode: StatusOk,
+		Headers: Headers{"Connection": "close"},
+		Body: []byte{},
+	}
 }
 
-func (r *Response) SetHeader(header string, value string) error {
+// Adds header, if it exists will concatenate onto existing value
+func (r *Response) AddHeader(header string, value string) error {
 	return r.Headers.Add(header, value)
-} // FIX: Sometimes you may want to override as opposed to just adding
-
-func (r *Response) SetDefaultHeaders(contentLength int) {
-	headers := Headers{}
-
-	length := strconv.Itoa(contentLength)
-	headers.Add("Content-Length", length)
-	headers.Add("Connection", "close")
-	headers.Add("Content-Type", "text/plain")
-	r.Headers = headers
 }
-//TODO: Refactor this - maybe to use SetHeader
-// Maybe add more options to CreateResponse instead (i.e. content-type, etc)
 
-// Writes the responce to the writer (i.e. net.Connection)
-func (r *Response) Write(writer io.Writer) {
-	marshalledResponse := r.Marshall()
-	writer.Write(marshalledResponse)
+// Adds header, if it exists will override existing value
+func (r *Response) SetHeader(header string, value string) error {
+	return r.Headers.Set(header, value)
 }
 		
 // TODO:

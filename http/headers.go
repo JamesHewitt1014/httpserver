@@ -7,13 +7,11 @@ import (
 
 type Headers map[string]string
 
+// Adds a header, if header already exists - will concatenate the value
 func (H Headers) Add(header string, value string) (error) {
-	if !isValidFieldName(header) {
-		return ERROR_HEADER_FIELD_NAME
-	}
-
-	if len(value) == 0 {
-		return ERROR_HEADER_NO_VALUE
+	err := checkHeaderForErrors(header, value)
+	if err != nil {
+		return err
 	}
 
 	fieldName := strings.ToLower(header)
@@ -27,10 +25,35 @@ func (H Headers) Add(header string, value string) (error) {
 	return nil
 }
 
+// Adds a header, if header already exists - will override the value
+func (H Headers) Set(header string, value string) (error) {
+	err := checkHeaderForErrors(header, value)
+	if err != nil {
+		return err
+	}
+
+	fieldName := strings.ToLower(header)
+	H[fieldName] = value
+
+	return nil
+}
+
 func (H Headers) Get(header string) (string, bool) {
 	fieldName := strings.ToLower(header)
 	value, exists := H[fieldName]
 	return value, exists
+}
+
+func checkHeaderForErrors(header string, value string) (error) {
+	if !isValidFieldName(header) {
+		return ERROR_HEADER_FIELD_NAME
+	}
+
+	if len(value) == 0 {
+		return ERROR_HEADER_NO_VALUE
+	}
+
+	return nil
 }
 
 func isValidFieldName(header string) bool {
@@ -69,3 +92,7 @@ var (
 		errorMsg: "Header field name is not valid",
 	}
 )
+
+//NOTE:
+//Std library uses map[string][]string rather than map[string]string - this allows for multi values to be done without concatenating the string (easier management)
+//I was thinking that a different implementation might also help with response creation... i.e. pass headers as individual options
