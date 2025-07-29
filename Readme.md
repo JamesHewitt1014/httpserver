@@ -1,6 +1,6 @@
 
 # Http-Server Library
-This project is a simple and very limited Http Server library for Go. I built this to further my understanding of the HTTP protocol and of how HTTP server libraries work.
+This project is a simple and very limited HTTP Server library for Go. I built this to further my understanding of the HTTP protocol and the inner workings of HTTP server libraries.
 
 Features:
 * Provides a basic interface for the http server & routing

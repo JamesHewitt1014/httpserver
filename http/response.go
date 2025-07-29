@@ -93,3 +93,4 @@ func (r *Response) SetHeader(header string, value string) error {
 // TODO:
 // - Additional Headers: i.e. cache-control, datetime, etc
 // - Support for streamed response (i.e. to allow for chunked encode)
+// - More structured way to handle content-type?
