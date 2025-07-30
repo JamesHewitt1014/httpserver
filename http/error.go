@@ -6,19 +6,12 @@ import (
 
 type HttpError struct {
 	responseStatus Status
-	errorMsg       string
+	errorMessage   string
 }
 
 // Implement the Go error interface
 func (err HttpError) Error() string {
-	return err.errorMsg
-}
-
-// Creates a response from a Go error
-func ResponseFromError(err error) *Response {
-	httpError := errorAsHttpError(err)
-	message := []byte(httpError.errorMsg)
-	return CreateResponse(httpError.responseStatus, message)
+	return err.errorMessage
 }
 
 func errorAsHttpError(err error) HttpError {
@@ -31,7 +24,7 @@ func errorAsHttpError(err error) HttpError {
 
 	return HttpError{
 		responseStatus: StatusInternalError,
-		errorMsg: "An unknown internal error occurred",
+		errorMessage:   "An unknown internal error occurred",
 	}
 	//Note: Probably don't want to expose internal errors to end-users
 }

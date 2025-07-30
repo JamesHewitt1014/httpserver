@@ -84,12 +84,12 @@ var allowedSpecialChars = []byte{
 var (
 	ERROR_HEADER_NO_VALUE = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "A header entry contains no value",
+		errorMessage: "A header entry contains no value",
 	}
 
 	ERROR_HEADER_FIELD_NAME = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "Header field name is not valid",
+		errorMessage: "Header field name is not valid",
 	}
 )
 

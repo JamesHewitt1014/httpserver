@@ -67,8 +67,6 @@ func CreateResponse(status Status, content []byte) *Response {
 	res.Body = content 
 	return res
 }
-// TODO: want to update my approach to support multiple options / headers
-// 	this might require a refactor of the headers functionality
 
 // Returns an empty 200 OK response
 func Ok() *Response {

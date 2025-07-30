@@ -9,14 +9,17 @@ Features:
 * Responds with valid HTTP/1.1 responses
 
 # Usage
-Create server using:
+The http server requires a handler. The user can make their own handler as long as it conforms to the handler interface. The default handler is `http.Router`, this struct routes http requests to associated functions based on the requests path. Note that these functions must take a `http.Request` as the parameter and return a `http.Response`.
 
-`server := http.CreateServer()`
+```
+router := http.Router{}
+server.RegisterRoute("GET", "/example/of/path", functionName1)
+server.RegisterRoute("GET", "/different/path", functionName2)
+```
 
-Register as many routes you want - using the HttpMethod, request path, and the function you wish to apply to that route. 
-Note that this function must take a `http.Request` as its parameter and return a `http.Response`.
+Create the server using:
 
-`server.RegisterRoute("GET", "/example/of/path", functionName)`
+`server := http.CreateServer(router)`
 
 Start the server by using the start function and providing a port (i.e. 80)
 

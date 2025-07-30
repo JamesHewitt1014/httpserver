@@ -6,27 +6,24 @@ import (
 )
 
 type HttpServer struct {
-	router 	 *router
+	handler 	 Handler
 	listener net.Listener
 	open     bool
 }
-// NOTE: 
-// 1. open represents an actively listening server - could use an atomic bool or maybe even a channel instead if worried about race conditions
-// 2. Could add an insertable error handler to HttpServer: for setting how default errors are handled (i.e. change content-type to html, and display "500 server error" page)
-// 3. Routing is currently limited, an alternative might be to make Router an interface and to allow end-users to define routing behaviour. This would probably require it to be decoupled more from the HttpServer struct.
+// NOTE: open represents an actively listening server - could use an atomic bool or maybe even a channel instead if worried about race conditions
 
-func CreateServer() *HttpServer {
-	router := newRouter()
+type Handler interface{
+	dispatch(*Request) *Response
+	responseFromError(error) *Response
+}
+// Note: Instead of returning a response, taking in a writer like the one in the Go std library would allow for text streaming responses. - Could add a write func?
+
+func CreateServer(handler Handler) *HttpServer {
 	return &HttpServer{
-		router:	  router,
+		handler:	  handler,
 		listener: nil,
 		open:     false,
 	}	
-}
-
-// Registers a new route, if the route already exists it will be overwritten
-func (s *HttpServer) RegisterRoute(method string, path string, fn Handler){
-	s.router.RegisterRoute(method, path, fn)	
 }
 
 // Starts the HttpServer. It will begin listening for Http Requests
@@ -62,17 +59,11 @@ func (s *HttpServer) handleConnection(connection net.Conn) {
 	defer connection.Close()
 
 	var response *Response
-
 	request, err := requestFromStream(connection)
 	if err != nil {
-		response = ResponseFromError(err)
-		response.Write(connection)
-		return
-	}
-
-	response, err = s.router.dispatch(request)
-	if err != nil {
-		response = ResponseFromError(err)
+		response = s.handler.responseFromError(err)
+	} else {
+		response = s.handler.dispatch(request)
 	}
 
 	response.Write(connection)

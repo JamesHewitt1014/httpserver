@@ -91,12 +91,12 @@ func (r *Request) validate() error {
 var (
 	ERROR_INCORRECT_VERSION = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "Http version is incorrect",
+		errorMessage: "Http version is incorrect",
 	}
 
 	ERROR_METHOD_INVALID = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "Http method is not one of the accepted options",
+		errorMessage: "Http method is not one of the accepted options",
 	}
 )
 

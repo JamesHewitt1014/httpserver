@@ -136,21 +136,21 @@ func (p *requestParser) parseBody() error {
 var (
 	ERROR_BODY_LENGTH = HttpError{
 		responseStatus: StatusBadRequest,	
-		errorMsg: "Error with body length or content-length header",
+		errorMessage: "Error with body length or content-length header",
 	}
 
 	ERROR_LENGTH_NOT_NUM = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "Header 'content-length' was not a valid number",
+		errorMessage: "Header 'content-length' was not a valid number",
 	}
 
 	ERROR_MALFORMED_RL = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "Request line does not have three components",
+		errorMessage: "Request line does not have three components",
 	}
 
 	ERROR_MALFORMED_HEADERS = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMsg: "Header line is missing semicolon",
+		errorMessage: "Header line is missing semicolon",
 	}
 )

@@ -10,11 +10,12 @@ import (
 
 
 func main() {
-	server := http.CreateServer()
-	server.RegisterRoute("GET", "/test", method1)
-	server.RegisterRoute("PUT", "/example/2", method2)
-	server.RegisterRoute("GET", "/example/2", method3)
+	router := http.Router{}
+	router.RegisterRoute("GET", "/test", method1)
+	router.RegisterRoute("PUT", "/example/2", method2)
+	router.RegisterRoute("GET", "/example/2", method3)
 
+	server := http.CreateServer(router)
 	const port int = 8080
 	err := server.Start(port)
 	if err != nil {
