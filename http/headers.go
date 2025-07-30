@@ -8,7 +8,7 @@ import (
 type Headers map[string]string
 
 // Adds a header, if header already exists - will concatenate the value
-func (H Headers) Add(header string, value string) (error) {
+func (H Headers) Add(header string, value string) error {
 	err := checkHeaderForErrors(header, value)
 	if err != nil {
 		return err
@@ -18,7 +18,7 @@ func (H Headers) Add(header string, value string) (error) {
 	oldValue, exists := H[fieldName]
 	if exists {
 		H[fieldName] = oldValue + ", " + value
-	} else{
+	} else {
 		H[fieldName] = value
 	}
 
@@ -26,7 +26,7 @@ func (H Headers) Add(header string, value string) (error) {
 }
 
 // Adds a header, if header already exists - will override the value
-func (H Headers) Set(header string, value string) (error) {
+func (H Headers) Set(header string, value string) error {
 	err := checkHeaderForErrors(header, value)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (H Headers) Get(header string) (string, bool) {
 	return value, exists
 }
 
-func checkHeaderForErrors(header string, value string) (error) {
+func checkHeaderForErrors(header string, value string) error {
 	if !isValidFieldName(header) {
 		return ERROR_HEADER_FIELD_NAME
 	}
@@ -57,12 +57,12 @@ func checkHeaderForErrors(header string, value string) (error) {
 }
 
 func isValidFieldName(header string) bool {
-	if strings.HasSuffix(header, SPACE){
+	if strings.HasSuffix(header, SPACE) {
 		return false
 	}
 
 	for _, char := range header {
-		if !isValidChar(char){
+		if !isValidChar(char) {
 			return false
 		}
 	}
@@ -72,24 +72,24 @@ func isValidFieldName(header string) bool {
 
 func isValidChar(char rune) bool {
 	return bytes.ContainsRune(allowedSpecialChars, rune(char)) ||
-   		'0' <= char && char <= '9' ||
+		'0' <= char && char <= '9' ||
 		'a' <= char && char <= 'z' ||
 		'A' <= char && char <= 'Z'
 }
 
 var allowedSpecialChars = []byte{
-'!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~',
+	'!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~',
 }
 
 var (
 	ERROR_HEADER_NO_VALUE = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMessage: "A header entry contains no value",
+		errorMessage:   "A header entry contains no value",
 	}
 
 	ERROR_HEADER_FIELD_NAME = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMessage: "Header field name is not valid",
+		errorMessage:   "Header field name is not valid",
 	}
 )
 

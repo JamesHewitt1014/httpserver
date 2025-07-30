@@ -23,7 +23,7 @@ var statusMessage = map[Status]string{
 	500: "Internal Server Error",
 }
 
-func (s Status) String() string {	
+func (s Status) String() string {
 	n := int(s)
 	msg, _ := statusMessage[s]
 	return fmt.Sprintf("%d", n) + SPACE + msg

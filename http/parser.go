@@ -10,7 +10,6 @@ var CRLF = []byte("\r\n")
 const SPACE = " "
 
 type State int
-
 const (
 	INIT State = iota
 	HEADERS
@@ -19,20 +18,20 @@ const (
 )
 
 type requestParser struct {
-	state         State
-	request       *Request
-	line          []byte
+	state   State
+	request *Request
+	line    []byte
 }
 
 func newParser() *requestParser {
 	return &requestParser{
 		state: INIT,
 		request: &Request{
-			Headers: Headers{},
-			Body:    []byte{},
+			Headers:       Headers{},
+			Body:          []byte{},
 			ContentLength: 0,
 		},
-		line:          []byte{},
+		line: []byte{},
 	}
 }
 
@@ -77,8 +76,8 @@ func (p *requestParser) parseRequestLine() error {
 		return ERROR_MALFORMED_RL
 	}
 
-	p.request.HttpMethod  = components[0]
-	p.request.Path  	  = components[1]
+	p.request.HttpMethod = components[0]
+	p.request.Path = components[1]
 	p.request.HttpVersion = components[2]
 
 	p.state = HEADERS
@@ -116,7 +115,7 @@ func (p *requestParser) parseBody() error {
 		}
 		p.request.ContentLength = l
 	}
-	//FIX: Edge case "content-length" exists but is zero	
+	//FIX: Edge case "content-length" exists but is zero
 
 	body := p.line
 	length := p.request.ContentLength
@@ -135,22 +134,22 @@ func (p *requestParser) parseBody() error {
 
 var (
 	ERROR_BODY_LENGTH = HttpError{
-		responseStatus: StatusBadRequest,	
-		errorMessage: "Error with body length or content-length header",
+		responseStatus: StatusBadRequest,
+		errorMessage:   "Error with body length or content-length header",
 	}
 
 	ERROR_LENGTH_NOT_NUM = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMessage: "Header 'content-length' was not a valid number",
+		errorMessage:   "Header 'content-length' was not a valid number",
 	}
 
 	ERROR_MALFORMED_RL = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMessage: "Request line does not have three components",
+		errorMessage:   "Request line does not have three components",
 	}
 
 	ERROR_MALFORMED_HEADERS = HttpError{
 		responseStatus: StatusBadRequest,
-		errorMessage: "Header line is missing semicolon",
+		errorMessage:   "Header line is missing semicolon",
 	}
 )
